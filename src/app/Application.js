@@ -1,8 +1,10 @@
-import config from '../config';
-import EventEmitter from 'eventemitter3';
+import config from "../config";
+import EventEmitter from "eventemitter3";
+import Evlagbi from "./custom/Evlagbi";
+import Fire from "./custom/Fire";
 
 const EVENTS = {
-  APP_READY: 'app_ready',
+  APP_READY: "app_ready",
 };
 
 /**
@@ -14,7 +16,7 @@ export default class Application extends EventEmitter {
     super();
 
     this.config = config;
-    this.data = { };
+    this.data = {};
 
     this.init();
   }
@@ -31,8 +33,11 @@ export default class Application extends EventEmitter {
    */
   async init() {
     // Initiate classes and wait for async operations here.
-
+    // const avatar = new Evlagbi();
+    // avatar.drawChar();
+    const fire = new Fire(document.getElementById("container"));
+    fire.start();
+    // setTimeout(() => fire.stop(), 10000);
     this.emit(Application.events.APP_READY);
   }
 }
-
