@@ -33,11 +33,11 @@ export default class Application extends EventEmitter {
    */
   async init() {
     // Initiate classes and wait for async operations here.
-    // const avatar = new Evlagbi();
-    // avatar.drawChar();
+
     const fire = new Fire(document.getElementById("container"));
     fire.start();
-    // setTimeout(() => fire.stop(), 10000);
+    document.getElementById("container").appendChild(fire.container);
+    setTimeout(() => fire.stop(), 10000);
     this.emit(Application.events.APP_READY);
   }
 }
