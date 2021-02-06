@@ -1,13 +1,35 @@
 import gsap from "gsap/all";
 
+/**
+ * Creates a new animated fire.
+ * @class
+ */
 export default class Fire {
+  /**
+   * Loads the fire sprite sheet image and caches it.
+   * @private
+   * @static
+   */
+  static _loadFireSpritesheet() {
+    if (Fire._loadPromise) return Fire._loadPromise;
+    const url = "./src/assets/pewpew.png";
+    const img = new Image();
+    img.src = url;
+    Fire._fireSpriteSheet = img;
+    Fire._loadPromise = new Promise((resolve) => (img.onload = resolve));
+    return Fire._loadPromise;
+  }
+
+  /**
+   * Initializes the animation canvas.
+   * @constructor
+   */
   constructor() {
     this.container = document.createElement("div");
     this._canvas = document.createElement("canvas");
     this._canvas.height = 339;
     this._canvas.width = 220;
     this.container.appendChild(this._canvas);
-    this._ctx = this._canvas.getContext("2d");
     this._frames = [
       { y: 160, x: 50 },
       { y: 545, x: 47 },
@@ -27,9 +49,23 @@ export default class Fire {
       { y: 6464, x: 58 },
       { y: 6873, x: 59 },
     ];
+    this._onCanvasClick = this._animateFlare.bind(this);
   }
 
-  _brighter() {
+  /**
+   * Returns whether the animation is running.
+   * @private
+   */
+  get _isAnimationRunning() {
+    return this._ctx !== null;
+  }
+
+  /**
+   * Animates the fire brighter, then animates the fire brightness back to it's initial state.
+   * @method
+   * @private
+   */
+  _animateFlare() {
     gsap.fromTo(
       this._ctx,
       {
@@ -44,23 +80,22 @@ export default class Fire {
       }
     );
   }
-
-  async start(i = 0) {
-    if (i > 16) i = 0;
-    let url = "./src/assets/pewpew.png";
-    let img = new Image();
-    img.src = url;
-    await new Promise((r) => (img.onload = r));
-    this._canvas.addEventListener("click", () => {
-      this._brighter();
-    });
+  /**
+   * Draws fire frame by frame index, then schedules the next frame.
+   * @method
+   * @private
+   * @param {number} frameIndex
+   */
+  _drawFrame(frameIndex) {
+    if (!this._isAnimationRunning) return;
+    if (frameIndex > 16) frameIndex = 0;
 
     this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
     this._ctx.drawImage(
-      img,
-      this._frames[i].x,
-      this._frames[i].y,
+      Fire._fireSpriteSheet,
+      this._frames[frameIndex].x,
+      this._frames[frameIndex].y,
       220,
       339,
       0,
@@ -68,11 +103,27 @@ export default class Fire {
       220,
       339
     );
-
-    requestAnimationFrame(() => this.start(i + 1));
+    requestAnimationFrame(() => this._drawFrame(frameIndex + 1));
+  }
+  /**
+   * Starts the fire animation.
+   * @method
+   * @async
+   * @returns {Promise.<void>} Promise which resolves after the animation has been started.
+   */
+  async start() {
+    await Fire._loadFireSpritesheet();
+    this._ctx = this._canvas.getContext("2d");
+    this._canvas.addEventListener("click", this._onCanvasClick);
+    this._drawFrame(0);
   }
 
+  /**
+   * Stops the fire animation.
+   * @method
+   */
   stop() {
+    this._canvas.removeEventListener("click", this._onCanvasClick);
     this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
     this._ctx = null;
   }

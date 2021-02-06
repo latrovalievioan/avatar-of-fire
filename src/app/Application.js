@@ -35,9 +35,12 @@ export default class Application extends EventEmitter {
     // Initiate classes and wait for async operations here.
 
     const fire = new Fire(document.getElementById("container"));
-    fire.start();
+    await fire.start();
     document.getElementById("container").appendChild(fire.container);
-    setTimeout(() => fire.stop(), 10000);
+    setTimeout(() => {
+      fire.stop();
+      setTimeout(() => fire.start(), 3000);
+    }, 10000);
     this.emit(Application.events.APP_READY);
   }
 }
