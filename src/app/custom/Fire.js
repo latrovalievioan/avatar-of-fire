@@ -6,26 +6,6 @@ import gsap from "gsap/all";
  */
 export default class Fire {
   /**
-   * Loads the fire sprite sheet image and caches it.
-   * @private
-   * @static
-   */
-  _loadFireSpritesheet() {
-    const img = new Image();
-    img.src = this._imageUrl;
-    Fire.image = img;
-    return new Promise((resolve) => (img.onload = resolve));
-  }
-
-  static set image(element) {
-    this._image = element;
-  }
-
-  static get image() {
-    return this._image;
-  }
-
-  /**
    * Initializes the animation canvas.
    * @constructor
    */
@@ -58,6 +38,25 @@ export default class Fire {
     this._imageUrl = imageUrl;
     this._image = null;
     this._onCanvasClick = this._animateFlare.bind(this);
+  }
+
+  /**
+   * Loads the fire sprite sheet image and caches it.
+   * @private
+   */
+  _loadFireSpritesheet() {
+    const img = new Image();
+    img.src = this._imageUrl;
+    Fire.image = img;
+    return new Promise((resolve) => (img.onload = resolve));
+  }
+
+  static set image(element) {
+    this._image = element;
+  }
+
+  static get image() {
+    return this._image;
   }
 
   /**
