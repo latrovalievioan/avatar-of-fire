@@ -1,4 +1,4 @@
-# ⚙ GSAP Fire Animation
+# 🔥 GSAP Fire Animation
 
 This project implements a simple fire animation which when clicked burns brighter and after some time gets back to normal brightness. It initializes a base application with a webpack dev server.
 
