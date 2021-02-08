@@ -10,21 +10,26 @@ export default class Fire {
    * @private
    * @static
    */
-  static _loadFireSpritesheet() {
-    if (Fire._loadPromise) return Fire._loadPromise;
-    const url = "./src/assets/pewpew.png";
+  _loadFireSpritesheet() {
     const img = new Image();
-    img.src = url;
-    Fire._fireSpriteSheet = img;
-    Fire._loadPromise = new Promise((resolve) => (img.onload = resolve));
-    return Fire._loadPromise;
+    img.src = this._imageUrl;
+    Fire.image = img;
+    return new Promise((resolve) => (img.onload = resolve));
+  }
+
+  static set image(element) {
+    this._image = element;
+  }
+
+  static get image() {
+    return this._image;
   }
 
   /**
    * Initializes the animation canvas.
    * @constructor
    */
-  constructor() {
+  constructor(imageUrl) {
     this.container = document.createElement("div");
     this._canvas = document.createElement("canvas");
     this._canvas.height = 339;
@@ -49,6 +54,9 @@ export default class Fire {
       { y: 6464, x: 58 },
       { y: 6873, x: 59 },
     ];
+
+    this._imageUrl = imageUrl;
+    this._image = null;
     this._onCanvasClick = this._animateFlare.bind(this);
   }
 
@@ -93,7 +101,7 @@ export default class Fire {
     this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
     this._ctx.drawImage(
-      Fire._fireSpriteSheet,
+      Fire._image,
       this._frames[frameIndex].x,
       this._frames[frameIndex].y,
       220,
@@ -112,7 +120,7 @@ export default class Fire {
    * @returns {Promise.<void>} Promise which resolves after the animation has been started.
    */
   async start() {
-    await Fire._loadFireSpritesheet();
+    if (!Fire._image) await this._loadFireSpritesheet();
     this._ctx = this._canvas.getContext("2d");
     this._canvas.addEventListener("click", this._onCanvasClick);
     this._drawFrame(0);

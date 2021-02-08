@@ -34,7 +34,7 @@ export default class Application extends EventEmitter {
   async init() {
     // Initiate classes and wait for async operations here.
 
-    const fire = new Fire(document.getElementById("container"));
+    const fire = new Fire("./src/assets/pewpew.png");
     await fire.start();
     document.getElementById("container").appendChild(fire.container);
     setTimeout(() => {
