@@ -1,6 +1,5 @@
 import config from "../config";
 import EventEmitter from "eventemitter3";
-import Evlagbi from "./custom/Evlagbi";
 import Fire from "./custom/Fire";
 
 const EVENTS = {
